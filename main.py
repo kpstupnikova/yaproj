@@ -282,7 +282,7 @@ while running:
     movements_rect.topleft = (10, 50)
     screen.blit(movements_text, movements_rect)
     pygame.display.flip()
-    clock.tick(FPS)
+    clock.tick(FPS)  # гугл лучше
 
 pygame.quit()
 sys.exit()
