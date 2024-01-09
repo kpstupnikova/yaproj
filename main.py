@@ -27,6 +27,24 @@ def check_win_condition(level):
     return True  # Все ящики на своих местах
 
 
+# новая функция для отображения финального экрана победы
+def show_victory_screen():
+    screen.fill((255, 255, 255))  # Очищаем экран и устанавливаем белый фон
+    font = pygame.font.Font(None, 100)  # Устанавливаем размер шрифта
+    victory_text = font.render("Победа", True, pygame.Color('black'))  # Текст с черным цветом
+    text_rect = victory_text.get_rect(center=(width // 2, height // 2))  # Располагаем текст по центру экрана
+    screen.blit(victory_text, text_rect)  # Отображаем текст на экране
+    pygame.display.flip()  # Обновляем экран, чтобы отобразить финальную заставку
+    # Ожидание выхода после победы
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:  # Выход по нажатию Escape
+                    terminate()
+
+
 def load_image(name, colorkey=None):
     fullname = os.path.join('data', name)
     if not os.path.isfile(fullname):
@@ -229,7 +247,7 @@ def can_move(whom, where, level):
 
             # Проверка условий победы
             if check_win_condition(map_level):
-                print("Победа!")
+                show_victory_screen()  # Отображаем финальный экран
                 running = False  # Завершаем игру
 
         # Если перед нами пустая клетка, перемещаемся туда
@@ -301,7 +319,10 @@ while running:
     movements_rect.topleft = (10, 50)
     screen.blit(movements_text, movements_rect)
     pygame.display.flip()
-    clock.tick(FPS)  # гугл лучше
+    clock.tick(FPS)
+
+    if not running:
+        break  # Если running стал False, выходим из игрового цикла
 
 pygame.quit()
 sys.exit()
