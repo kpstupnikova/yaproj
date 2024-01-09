@@ -15,6 +15,18 @@ def terminate():
     sys.exit()
 
 
+boxes_positions = {}
+
+
+def check_win_condition(level):
+    for y in range(level_y):
+        for x in range(level_x):
+            # Если на месте точки нет ящика, то условие победы не выполнено
+            if level[y][x] == 'T' and (x, y) not in boxes_positions:
+                return False  # Условие победы не выполнено
+    return True  # Все ящики на своих местах
+
+
 def load_image(name, colorkey=None):
     fullname = os.path.join('data', name)
     if not os.path.isfile(fullname):
@@ -127,6 +139,7 @@ tile_images = {
     'tochka': load_image('tochka.jpg'),
     'yachik': load_image('yachik.jpg')
 }
+tochka = load_image('tochka.jpg')
 yachik = load_image('yachik.jpg')
 player_image = load_image('kirby.jpg')
 
@@ -206,12 +219,18 @@ def can_move(whom, where, level):
         # Если перед нами ящик, и позади ящика пустое место или "точка",
         # тогда двигаем ящик
         if object_in_front == '№' and next_pos_is_empty_or_tochka:
-            # Переместить ящик на следующую клетку
             level[y + dy][x + dx] = '.'
             level[y + 2 * dy][x + 2 * dx] = '№'
+            boxes_positions[(x + 2 * dx, y + 2 * dy)] = True  # Обновляем позицию ящика
+            if (x + dx, y + dy) in boxes_positions:
+                del boxes_positions[(x + dx, y + dy)]  # Удаляем старую позицию ящика
             whom.move(x + dx, y + dy)
-            # Обновляем позиции ящика на карте уровня
             update_map(level)
+
+            # Проверка условий победы
+            if check_win_condition(map_level):
+                print("Победа!")
+                running = False  # Завершаем игру
 
         # Если перед нами пустая клетка, перемещаемся туда
         elif object_in_front == '.':
