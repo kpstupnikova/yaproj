@@ -12,19 +12,37 @@ for lib in libraries:
     except ImportError:
         print(f'Не удалось импортировать библиотеку: {lib}')
 
-FPS = 50
+FPS = 20
 pygame.init()
 size = width, height = 700, 500
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
+pygame.display.set_caption("Сокобан")
 
+# Загрузка изображений для анимации
+image1 = pygame.image.load('image1.png')
+image2 = pygame.image.load('image2.png')
+image3 = pygame.image.load('image3.png')
+image4 = pygame.image.load('image4.png')
+image5 = pygame.image.load('image5.png')
 
+image6 = pygame.image.load('image6.png')
+image7 = pygame.image.load('image7.png')
+image8 = pygame.image.load('image8.png')
+image9 = pygame.image.load('image9.png')
+image10 = pygame.image.load('image10.png')
+frame_index = 0
+boxes_positions = {}
+# Цикл обработки каждого изображения
+animation_images = []
+for image in [image1, image2, image3, image4, image5, image6, image7, image8, image9, image10]:
+    # Применение метода удаления фона
+    processed_image = image.convert_alpha()
+    processed_image.set_colorkey((255, 255, 255))
+    animation_images.append(processed_image)
 def terminate():
     pygame.quit()
     sys.exit()
-
-
-boxes_positions = {}
 
 
 def check_win_condition(level):
@@ -36,7 +54,7 @@ def check_win_condition(level):
     return True  # Все ящики на своих местах
 
 
-# новая функция для отображения финального экрана победы
+# функция для отображения финального экрана победы
 def show_victory_screen():
     screen.fill((255, 255, 255))  # Очищаем экран и устанавливаем белый фон
     font = pygame.font.Font(None, 100)  # Устанавливаем размер шрифта
@@ -62,17 +80,13 @@ def load_image(name, colorkey=None):
         print(f"Файл с изображением '{fullname}' не найден")
         sys.exit()
     image = pygame.image.load(fullname)
-
     if colorkey is not None:
         image = image.convert()
-
         if colorkey == -1:
             colorkey = image.get_at((0, 0))
         image.set_colorkey(colorkey)
-
     else:
         image = image.convert_alpha()
-
     return image
 
 
@@ -94,18 +108,16 @@ def start_screen():
         intro_rect.x = 10
         text_coord += intro_rect.height
         screen.blit(string_rendered, intro_rect)
-
     pygame.display.flip()
-
     # Ожидание нажатия клавиши или кнопки мыши
     waiting_for_key = True
+
     while waiting_for_key:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
             elif event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
                 waiting_for_key = False
-
     # Закрываем заставку
     screen.fill((255, 255, 255))
     pygame.display.flip()
@@ -139,7 +151,6 @@ def choose_level():
 
     while selected_level is None:
         for event in pygame.event.get():
-
             if event.type == pygame.QUIT:
                 terminate()
 
@@ -178,7 +189,6 @@ tile_images = {
 
 tochka = load_image('tochka.jpg')
 yachik = load_image('yachik.jpg')
-player_image = load_image('kirby.jpg')
 
 tile_width = tile_height = 50
 
@@ -193,10 +203,19 @@ class Tile(pygame.sprite.Sprite):
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos_x, pos_y):
         super().__init__(player_group, all_sprites)
-        self.image = player_image
+        self.animation_images = animation_images
+        self.image_index = 0
+        self.image = self.animation_images[self.image_index]
         self.pos = pos_x, pos_y
         self.rect = self.image.get_rect(
             center=(tile_width * pos_x + tile_width // 2, tile_height * pos_y + tile_height // 2))
+
+    def update(self, *args):
+        # Обновление анимации
+        self.image = self.animation_images[self.image_index]
+        self.image_index = (self.image_index + 1) % len(animation_images)
+        # Перемещение персонажа
+        self.rect.topleft = self.pos[0] * tile_width, self.pos[1] * tile_height
 
     def move(self, x, y):
         self.pos = x, y
@@ -307,8 +326,10 @@ running = True
 
 movements_count = 0
 start_ticks = pygame.time.get_ticks()  # начальное время для таймера
+
 while running:
     screen.fill((0, 0, 0))  # Очищаем экран
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
