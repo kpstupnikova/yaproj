@@ -12,7 +12,6 @@ for lib in libraries:
     except ImportError:
         print(f'Не удалось импортировать библиотеку: {lib}')
 
-
 FPS = 50
 pygame.init()
 size = width, height = 700, 500
@@ -48,8 +47,10 @@ def show_victory_screen():
     # Ожидание выхода после победы
     while True:
         for event in pygame.event.get():
+
             if event.type == pygame.QUIT:
                 terminate()
+
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:  # Выход по нажатию Escape
                     terminate()
@@ -61,13 +62,17 @@ def load_image(name, colorkey=None):
         print(f"Файл с изображением '{fullname}' не найден")
         sys.exit()
     image = pygame.image.load(fullname)
+
     if colorkey is not None:
         image = image.convert()
+
         if colorkey == -1:
             colorkey = image.get_at((0, 0))
         image.set_colorkey(colorkey)
+
     else:
         image = image.convert_alpha()
+
     return image
 
 
@@ -80,6 +85,7 @@ def start_screen():
     screen.blit(fon, (0, 0))
     font = pygame.font.Font(None, 30)
     text_coord = 50
+
     for line in intro_text:
         string_rendered = font.render(line, 1, pygame.Color('black'))
         intro_rect = string_rendered.get_rect()
@@ -133,8 +139,10 @@ def choose_level():
 
     while selected_level is None:
         for event in pygame.event.get():
+
             if event.type == pygame.QUIT:
                 terminate()
+
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = event.pos
                 if 10 < x < 200 and 100 < y < 130:
@@ -167,6 +175,7 @@ tile_images = {
     'tochka': load_image('tochka.jpg'),
     'yachik': load_image('yachik.jpg')
 }
+
 tochka = load_image('tochka.jpg')
 yachik = load_image('yachik.jpg')
 player_image = load_image('kirby.jpg')
@@ -209,12 +218,16 @@ def generate_level(level):
         for x in range(level_x):
             if level[y][x] == '.':
                 Tile('empty', x, y)
+
             elif level[y][x] == '#':
                 Tile('wall', x, y)
+
             elif level[y][x] == '№':
                 Tile('yachik', x, y)
+
             elif level[y][x] == 'T':
                 Tile('tochka', x, y)
+
             elif level[y][x] == '@':
                 Tile('empty', x, y)
                 new_player = Player(x, y)
@@ -233,25 +246,22 @@ def can_move(whom, where, level):
         dx = -1
     elif where == 'right':
         dx = 1
-
-    # Проверяем, находится ли перед нами ящик
     if 0 <= x + dx < level_x and 0 <= y + dy < level_y:
         object_in_front = level[y + dy][x + dx]
-
-        # Определить, пустое ли место или "точка" находится за ящиком
         next_pos_is_empty_or_tochka = (
-                0 <= x + 2 * dx < level_x and 0 <= y + 2 * dy < level_y and
-                level[y + 2 * dy][x + 2 * dx] in ['.', 'T']
-        )
+                0 <= x + 2 * dx < level_x and 0 <= y + 2 * dy < level_y and level[y + 2 * dy][x + 2 * dx] in ['.',
+                                                                                                              'T'])
 
-        # Если перед нами ящик, и позади ящика пустое место или "точка",
-        # тогда двигаем ящик
-        if object_in_front == '№' and next_pos_is_empty_or_tochka:
-            level[y + dy][x + dx] = '.'
-            level[y + 2 * dy][x + 2 * dx] = '№'
-            boxes_positions[(x + 2 * dx, y + 2 * dy)] = True  # Обновляем позицию ящика
+        if object_in_front == '№' and next_pos_is_empty_or_tochka:  # если перед игроком стоит ящик
+            # проверяем, можно ли двигать ящик
+            if collide(x + dx, y + dy, level):
+                level[y + dy][x + dx] = '.'
+                level[y + 2 * dy][x + 2 * dx] = '№'
+                boxes_positions[(x + 2 * dx, y + 2 * dy)] = True
+
             if (x + dx, y + dy) in boxes_positions:
-                del boxes_positions[(x + dx, y + dy)]  # Удаляем старую позицию ящика
+                del boxes_positions[(x + dx, y + dy)]
+
             whom.move(x + dx, y + dy)
             update_map(level)
 
@@ -260,13 +270,19 @@ def can_move(whom, where, level):
                 show_victory_screen()  # Отображаем финальный экран
                 running = False  # Завершаем игру
 
-        # Если перед нами пустая клетка, перемещаемся туда
         elif object_in_front == '.':
             whom.move(x + dx, y + dy)
 
-        # Если перед нами "точка", перемещаемся туда
         elif object_in_front == 'T':
             whom.move(x + dx, y + dy)
+
+
+# функция проверки столкновения с ящиком
+def collide(x, y, level):
+    if level[y][x] == '№':  # если в указанных координатах есть ящик
+        return True
+    else:
+        return False
 
 
 def update_map(level):
@@ -296,17 +312,22 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP or event.key == pygame.K_DOWN or event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+            if event.key == pygame.K_UP or event.key == pygame.K_DOWN or event.key == pygame.K_LEFT \
+                    or event.key == pygame.K_RIGHT:
                 if event.key == pygame.K_UP:
                     can_move(player, 'up', map_level)
                     movements_count += 1
+
                 elif event.key == pygame.K_DOWN:
                     can_move(player, 'down', map_level)
                     movements_count += 1
+
                 elif event.key == pygame.K_LEFT:
                     can_move(player, 'left', map_level)
                     movements_count += 1
+
                 elif event.key == pygame.K_RIGHT:
                     can_move(player, 'right', map_level)
                     movements_count += 1
@@ -323,7 +344,7 @@ while running:
     timer_rect.topleft = (10, 10)
     screen.blit(timer_text, timer_rect)
 
-    # Обновите счетчик шагов
+    # Обновление счетчик шагов
     movements_text = font.render(f"Количество нажатий: {movements_count}", True, pygame.Color('white'))
     movements_rect = movements_text.get_rect()
     movements_rect.topleft = (10, 50)
