@@ -40,6 +40,8 @@ for image in [image1, image2, image3, image4, image5, image6, image7, image8, im
     processed_image = image.convert_alpha()
     processed_image.set_colorkey((255, 255, 255))
     animation_images.append(processed_image)
+
+
 def terminate():
     pygame.quit()
     sys.exit()
@@ -56,7 +58,8 @@ def check_win_condition(level):
 
 # функция для отображения финального экрана победы
 def show_victory_screen():
-    screen.fill((255, 255, 255))  # Очищаем экран и устанавливаем белый фон
+    fon = pygame.transform.scale(load_image('pobeda.jpg'), (width, height))
+    screen.blit(fon, (0, 0))
     font = pygame.font.Font(None, 100)  # Устанавливаем размер шрифта
     victory_text = font.render("Победа", True, pygame.Color('black'))  # Текст с черным цветом
     text_rect = victory_text.get_rect(center=(width // 2, height // 2))  # Располагаем текст по центру экрана
@@ -93,15 +96,16 @@ def load_image(name, colorkey=None):
 def start_screen():
     intro_text = ["ЗАСТАВКА", "",
                   "Правила игры",
-                  "Передвигаться с помощью стрелок"]
+                  "Передвигаться с помощью стрелок",
+                  'Задвинуть все тортики в фиолетовые квадратики']
 
     fon = pygame.transform.scale(load_image('fon.jpg'), (width, height))
     screen.blit(fon, (0, 0))
     font = pygame.font.Font(None, 30)
-    text_coord = 50
+    text_coord = 70
 
     for line in intro_text:
-        string_rendered = font.render(line, 1, pygame.Color('black'))
+        string_rendered = font.render(line, 1, pygame.Color('white'))
         intro_rect = string_rendered.get_rect()
         text_coord += 10
         intro_rect.top = text_coord
@@ -128,16 +132,18 @@ def start_screen():
 
 def choose_level():
     # Отображаем меню выбора уровня
-    level_menu_text = ["Выберите уровень:",
+    level_menu_text = ['Выберите уровень',
                        "1. Уровень 1",
                        "2. Уровень 2",
                        "3. Уровень 3",
                        "4. Уровень 4",
-                       "5. Уровень 5"]
+                       "5. Уровень 5"
+                       ]
 
+    fon = pygame.transform.scale(load_image('menu.jpg'), (width, height))
     font = pygame.font.Font(None, 40)
     text_coord = 50
-
+    screen.blit(fon, (0, 0))
     selected_level = None
     for line in level_menu_text:
         string_rendered = font.render(line, 1, pygame.Color('black'))
@@ -147,6 +153,7 @@ def choose_level():
         intro_rect.x = 10
         text_coord += intro_rect.height
         screen.blit(string_rendered, intro_rect)
+
     pygame.display.flip()
 
     while selected_level is None:
@@ -181,8 +188,8 @@ def load_level(filename):
 
 
 tile_images = {
-    'wall': load_image('box.png'),
-    'empty': load_image('grass.png'),
+    'wall': load_image('box.jpg'),
+    'empty': load_image('grass.jpg'),
     'tochka': load_image('tochka.jpg'),
     'yachik': load_image('yachik.jpg')
 }
