@@ -1,7 +1,17 @@
-import os
-import sys
+# Открываем файл с библиотеками
+with open('requirements.txt', 'r') as file:
+    # Читаем содержимое файла
+    libraries = file.readlines()
+    # Убираем символ перевода строки
+    libraries = [lib.strip() for lib in libraries]
 
-import pygame
+# Импортируем библиотеки
+for lib in libraries:
+    try:
+        exec(f'import {lib}')
+    except ImportError:
+        print(f'Не удалось импортировать библиотеку: {lib}')
+
 
 FPS = 50
 pygame.init()
