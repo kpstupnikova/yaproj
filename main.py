@@ -199,14 +199,15 @@ def show_victory_screen(seconds):
 
 
 def start_screen():
-    intro_text = ["ЗАСТАВКА", "",
+    intro_text = ["ЗАСТАВКА",
                   "Правила игры",
-                  "Передвигаться с помощью стрелок",
-                  'Задвинуть все тортики в фиолетовые квадратики']
+                  "Передвигайся с помощью стрелок",
+                  'Задвинь все тортики в фиолетовые квадратики',
+                  'Остерегайся врагов!']
 
     fon = pygame.transform.scale(load_image('fon.jpg'), (width, height))
     screen.blit(fon, (0, 0))
-    font = pygame.font.Font(None, 30)
+    font = pygame.font.Font(None, 40)
     text_coord = 70
 
     for line in intro_text:
