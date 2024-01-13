@@ -479,7 +479,8 @@ while running:
 
     font = pygame.font.Font(None, 30)
 
-    # Отображение таймера    seconds = (pygame.time.get_ticks() - start_ticks) // 1000  # Преобразование миллисекунд в секунды
+    # Отображение таймера
+    seconds = (pygame.time.get_ticks() - start_ticks) // 1000  # Преобразование миллисекунд в секунды
     timer_text = font.render(f"Время: {seconds}", True, pygame.Color('black'))
     timer_rect = timer_text.get_rect()
     timer_rect.topleft = (10, 10)
