@@ -371,12 +371,16 @@ def can_move(whom, where, level):
     dx, dy = 0, 0
     if where == 'up':
         dy = -1
+
     elif where == 'down':
         dy = 1
+
     elif where == 'left':
         dx = -1
+
     elif where == 'right':
         dx = 1
+
     if 0 <= x + dx < level_x and 0 <= y + dy < level_y:
         object_in_front = level[y + dy][x + dx]
         next_pos_is_empty_or_tochka = (
