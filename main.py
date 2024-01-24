@@ -69,12 +69,23 @@ tile_images = {
     'wall': load_image('box.jpg'),
     'empty': load_image('grass.jpg'),
     'tochka': load_image('tochka.jpg'),
+
     'yachik': load_image('yachik.jpg'),
     'trava': load_image('trava.jpg'),
     'stown': load_image('stown.jpg'),
+
     'listva': load_image('listva.jpg'),
+    'pes': load_image('pes.jpg'),
+    'pesok': load_image('pesok.jpg'),
+
+    'kaktus': load_image('kaktus.jpg'),
+    'ad': load_image('ad.jpg'),
+    'add': load_image('add.jpg'),
+
+    'lava': load_image('lava.jpg'),
     'tree': load_image('tree.jpg')
 }
+
 tochka = load_image('tochka.jpg')
 yachik = load_image('yachik.jpg')
 
@@ -375,6 +386,24 @@ def generate_level(level):
             elif level[y][x] == 'e':
                 Tile('tree', x, y)
 
+            elif level[y][x] == 'p':
+                Tile('pes', x, y)
+
+            elif level[y][x] == 'P':
+                Tile('pesok', x, y)
+
+            elif level[y][x] == 'k':
+                Tile('kaktus', x, y)
+
+            elif level[y][x] == 'a':
+                Tile('ad', x, y)
+
+            elif level[y][x] == 'A':
+                Tile('add', x, y)
+
+            elif level[y][x] == 'L':
+                Tile('lava', x, y)
+
             elif level[y][x] == '@':
                 Tile('empty', x, y)
                 new_player = Player(x, y)
@@ -502,13 +531,13 @@ while running:
 
     # Отображение таймера
     seconds = (pygame.time.get_ticks() - start_ticks) // 1000  # Преобразование миллисекунд в секунды
-    timer_text = font.render(f"Время: {seconds}", True, pygame.Color('white'))
+    timer_text = font.render(f"Время: {seconds}", True, pygame.Color('black'))
     timer_rect = timer_text.get_rect()
     timer_rect.topleft = (10, 10)
     screen.blit(timer_text, timer_rect)
 
     # Обновление счетчик шагов
-    movements_text = font.render(f"Количество нажатий: {movements_count}", True, pygame.Color('white'))
+    movements_text = font.render(f"Количество нажатий: {movements_count}", True, pygame.Color('black'))
     movements_rect = movements_text.get_rect()
     movements_rect.topleft = (10, 50)
     screen.blit(movements_text, movements_rect)
