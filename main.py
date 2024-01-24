@@ -69,7 +69,11 @@ tile_images = {
     'wall': load_image('box.jpg'),
     'empty': load_image('grass.jpg'),
     'tochka': load_image('tochka.jpg'),
-    'yachik': load_image('yachik.jpg')
+    'yachik': load_image('yachik.jpg'),
+    'trava': load_image('trava.jpg'),
+    'stown': load_image('stown.jpg'),
+    'listva': load_image('listva.jpg'),
+    'tree': load_image('tree.jpg')
 }
 tochka = load_image('tochka.jpg')
 yachik = load_image('yachik.jpg')
@@ -109,7 +113,7 @@ class Ball(pygame.sprite.Sprite):
         super().__init__(all_sprites, bg)
         self.radius = radius
         self.image = pygame.Surface((2 * radius, 2 * radius), pygame.SRCALPHA, 32)
-        pygame.draw.circle(self.image, pygame.Color("pink"),
+        pygame.draw.circle(self.image, pygame.Color("black"),
                            (radius, radius), radius)
         x = random.randint(0, width)
         y = random.randint(0, height)
@@ -118,8 +122,8 @@ class Ball(pygame.sprite.Sprite):
             x = random.randint(0, width)
             y = random.randint(0, height)
             self.rect = pygame.Rect(x, y, 2 * radius, 2 * radius)
-        self.vx = random.randint(0, 5)
-        self.vy = random.randrange(0, 5)
+        self.vx = random.randint(2, 3)
+        self.vy = random.randrange(2, 3)
 
     def update(self):
         self.rect = self.rect.move(self.vx, self.vy)
@@ -359,6 +363,18 @@ def generate_level(level):
             elif level[y][x] == 'T':
                 Tile('tochka', x, y)
 
+            elif level[y][x] == 't':
+                Tile('stown', x, y)
+
+            elif level[y][x] == 's':
+                Tile('trava', x, y)
+
+            elif level[y][x] == 'l':
+                Tile('listva', x, y)
+
+            elif level[y][x] == 'e':
+                Tile('tree', x, y)
+
             elif level[y][x] == '@':
                 Tile('empty', x, y)
                 new_player = Player(x, y)
@@ -486,13 +502,13 @@ while running:
 
     # Отображение таймера
     seconds = (pygame.time.get_ticks() - start_ticks) // 1000  # Преобразование миллисекунд в секунды
-    timer_text = font.render(f"Время: {seconds}", True, pygame.Color('black'))
+    timer_text = font.render(f"Время: {seconds}", True, pygame.Color('white'))
     timer_rect = timer_text.get_rect()
     timer_rect.topleft = (10, 10)
     screen.blit(timer_text, timer_rect)
 
     # Обновление счетчик шагов
-    movements_text = font.render(f"Количество нажатий: {movements_count}", True, pygame.Color('black'))
+    movements_text = font.render(f"Количество нажатий: {movements_count}", True, pygame.Color('white'))
     movements_rect = movements_text.get_rect()
     movements_rect.topleft = (10, 50)
     screen.blit(movements_text, movements_rect)
